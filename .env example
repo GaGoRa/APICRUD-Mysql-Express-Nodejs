@@ -1,7 +1,0 @@
-PORT_DATABASE = 3306
-HOST_DATABASE = 'localhost'
-USER_DATABASE = 'root'
-PASSWORD_DATABASE = ''
-NAME_DATABASE = 'shoppingsapi'
-TYPE_DATABASE = 'mysql'
-
