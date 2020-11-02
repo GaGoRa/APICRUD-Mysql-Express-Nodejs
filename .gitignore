@@ -1,2 +1,5 @@
-tareas.txt
+tareas*
 *.env
+.env*
+*.vs
+vs.*
