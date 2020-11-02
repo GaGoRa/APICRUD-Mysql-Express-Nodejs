@@ -2,4 +2,5 @@ tareas*
 *.env
 .env*
 *.vs/
+.vs/*
 .vs/
