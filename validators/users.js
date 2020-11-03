@@ -1,3 +1,4 @@
+const e = require('express');
 const Joi = require('joi');
 
 
@@ -12,12 +13,12 @@ const Joi = require('joi');
 
         LastName: Joi.string()
         .alphanum()
-        .min(30)
+        .min(3)
         .max(30),
 
         DNI: Joi.number()
         .integer()
-        .min(7)
+        .min(1)
         .max(11)
         .required(),
 
@@ -35,8 +36,10 @@ const Joi = require('joi');
         .max(10)
         .required(),
 
-        Email:Joi.string()
-        .email({minDomainSegments: 2,tlds:{allow:['com','net'] } })
+        email:Joi.string().email()
+
+        
+        
 
     });
     console.log(users);
@@ -47,8 +50,14 @@ const Joi = require('joi');
         next()
     }catch(err){
         console.log(err);
-        return res.status(500).send(err);
+        if(err.details && err.details.length > 0){
+            const errors = err.details.map(detailError => detailError.message)
+            return res.status(500).send(errors.join(', '));
 
+        }
+        console.log(err);
+        return res.status(500).send('We have errors when validating data');
+    
     }
 
 }

@@ -1,11 +1,38 @@
 
+const { options } = require('joi');
 const { User} = require('../config/db')
 
-async function getList(req, res) {
-    const listUsers = await User.findAll()
-    return res.status(200).json(listUsers);
-}
+/* 
+const getPagination = (page ,size) => {
+    const limit = size ? +size : 3;
+    const offset =page ? page * limit :0;
+    return { limit , offset}
+} */
 
+
+async function getList(req, res) {
+
+    const limit  = req.query.limit ? req.query.limit : 0;
+    const skip  = req.query.skip ? req.query.skip : 0;
+
+    try {
+    const count = await User.count()
+    const listUsers = await User.findAll({
+        limit: parseInt(limit),
+        offset: parseInt(skip),
+    });
+    return res.status(200).json({body: {
+        count: count,
+        users: listUsers
+    }
+        }
+    );
+}catch(err){
+    console.log(err)
+    return res.status(500).json({message:"Error getting result"});
+
+    }
+}
 async function create(req, res) {
     console.log(req.body)
     try{
