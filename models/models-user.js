@@ -32,7 +32,12 @@ module.exports = (sequelize, type) => {
             type: type.STRING,
             allowNull: false,
         },
-        email: {
+        Email: {
+            type: type.STRING,
+            allowNull: false,
+            unique: true
+        },  
+        Rol: {
             type: type.STRING,
             allowNull: false,
             unique: true

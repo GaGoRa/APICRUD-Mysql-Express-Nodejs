@@ -4,6 +4,7 @@ const Sequelize = require('sequelize');
 const {modelsShopping,modelsStore,modelsUser} = require('../models/index')
 
 
+
 const sequelize = new Sequelize(
         process.env.NAME_DATABASE,
         process.env.USER_DATABASE,
@@ -29,5 +30,7 @@ sequelize.sync({force: false})
 module.exports = {
     Shopping,
     Store,
-    User
+    User,
+    
+    
 };

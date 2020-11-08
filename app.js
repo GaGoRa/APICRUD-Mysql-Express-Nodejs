@@ -8,6 +8,9 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var shoppingRouter = require('./routes/shopping');
 var storeRouter = require('./routes/store');
+var authRouter = require('./routes/auth');
+
+
 const bodyParser = require('body-parser');
 
 var app = express();
@@ -25,6 +28,7 @@ app.use(cookieParser());
 // use Router
 
 app.use('/', indexRouter);
+app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 app.use('/shopping', shoppingRouter);
 app.use('/store', storeRouter);
