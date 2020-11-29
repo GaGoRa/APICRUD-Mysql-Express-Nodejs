@@ -2,14 +2,18 @@ var express = require('express');
 var router = express.Router();
 
 const storeController = require('../controller/controller-store')
+const roleMiddleware = require('../Middleware/roles');
+const validatorStore = require('../validators/store')
 
+router.get('/:id',roleMiddleware.checkRole(['ADMIN','SHOPPING_MANAGER','COMERCE_MANAGER','USER']),storeController.get)
 
-router.get('/',storeController.get)
-router.get('/:id',storeController.getList);
+router.get('/',roleMiddleware.checkRole(['ADMIN','SHOPPING_MANAGER','COMERCE_MANAGER','USER']),storeController.getList);
 
-router.post('/',storeController.create);
+router.post('/',roleMiddleware.checkRole(['ADMIN','COMERCE_MANAGER']
+),validatorStore.create,storeController.create);
 
-router.post('/:id',storeController.update);
-router.delete('/:id',storeController.deleter);
+router.post('/:id',roleMiddleware.checkRole(['ADMIN','COMERCE_MANAGER']),validatorStore.update,storeController.update);
 
-module.exports = router;
+router.delete('/:id',roleMiddleware.checkRole(['ADMIN','COMERCE_MANAGER']),storeController.deleter);
+
+module.exports = router

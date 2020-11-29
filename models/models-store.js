@@ -11,18 +11,11 @@ module.exports = (sequelize, type) => {
             type: type.STRING,
             allowNull: false,
         },
-        Manager: {
-            type: type.STRING,
-            allowNull: false,
-        },
+        
         Cuit: {
             type: type.STRING,
             unique:true
             
-        },
-        shopping_Id: {
-            type: type.STRING,
-            allowNull: false,
         },
 
     })

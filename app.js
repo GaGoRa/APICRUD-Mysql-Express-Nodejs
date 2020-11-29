@@ -3,6 +3,9 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+
+
+
 // routes
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -11,8 +14,9 @@ var storeRouter = require('./routes/store');
 var authRouter = require('./routes/auth');
 
 
-const bodyParser = require('body-parser');
 
+const bodyParser = require('body-parser');
+const authMiddleware = require('./Middleware/auth')
 var app = express();
 
 // db
@@ -30,8 +34,8 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
-app.use('/shopping', shoppingRouter);
-app.use('/store', storeRouter);
+app.use('/shopping',authMiddleware.authenticate, shoppingRouter);
+app.use('/store', authMiddleware.authenticate,storeRouter);
 
 
 
@@ -49,7 +53,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.send({message:'Route not found 404'});
 });
 
 module.exports = app;

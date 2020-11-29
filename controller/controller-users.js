@@ -39,7 +39,7 @@ try{
 
     }catch(err){
         console.log(err);
-       return res.status(404).json({error:{message: err.message }}); 
+       return res.status(404).json({msg_error:err.errors[0].message}); 
         
     }
         
@@ -53,7 +53,6 @@ async function deleter(req, res) {
             id: req.params.userId,
         }
     });
-    console.log(user)
     if(!user){
     return res.status(404).json({errorMessage:"the user not exist"})
     }else{
@@ -63,7 +62,7 @@ async function deleter(req, res) {
         return res.status(200).json({ message: 'User was deleted'});
         }catch(err){
         console.log(err);
-        return res.status(404).json({errorMessage:err})
+        return res.status(404).json({msg_error:err.errors[0].message})
     }
 }
 }
@@ -76,8 +75,7 @@ async function get(req, res) {
 
 async function update(req, res) {
 
-    console.log(req.body)
-
+   
     const user = await User.findOne({
         where : {
             id: req.params.userId,
@@ -94,10 +92,9 @@ async function update(req, res) {
 
         }catch(err){
         console.log(err);
-        return res.status(404).json({errorMessage:err})
+        return res.status(404).json({msg_error:err.errors[0].message})
         }
-    }
-    
+    } 
 }
 
 module.exports = {

@@ -3,8 +3,6 @@ const Sequelize = require('sequelize');
 
 const {modelsShopping,modelsStore,modelsUser} = require('../models/index')
 
-
-
 const sequelize = new Sequelize(
         process.env.NAME_DATABASE,
         process.env.USER_DATABASE,
@@ -17,13 +15,24 @@ const sequelize = new Sequelize(
 
 )
 
+
+
+
+
 const Shopping = modelsShopping(sequelize, Sequelize);
 const Store = modelsStore(sequelize, Sequelize);
 const User = modelsUser(sequelize, Sequelize);
 
+//associations
+
+Shopping.belongsTo(User,{as:"Manager"});
+Store.belongsTo(Shopping,{as:"Shopping"});
+Store.belongsTo(User,{as:'UserManager'});
+
+
 sequelize.sync({force: false})
         .then(() =>{
-            console.log('Tablas sincronizadas')
+            console.log('synchronized tables')
         })
 
     

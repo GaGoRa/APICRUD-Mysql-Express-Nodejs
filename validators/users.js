@@ -1,4 +1,4 @@
-const e = require('express');
+
 const Joi = require('joi');
 
 
@@ -24,16 +24,18 @@ const Joi = require('joi');
         Birthdate: Joi.date()
         .required(),
         
+        
         Sex: Joi.string()
         .min(3)
         .max(8)
         .valid('FEMALE','female','male','MALE')
         .required(),
 
-        Password:Joi.string()
+        Password:Joi.string() 
         .alphanum()
         .min(8)
-        .required(),
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+        
 
         Email:Joi.string()
         .email()
@@ -103,10 +105,12 @@ async function update(req, res, next) {
 
     try {
         const result = await users.validateAsync(req.body);
+        console.log(req.body)
         next()
     }catch(err){
         if(err.details && err.details.length > 0){
             const errors = err.details.map(detailError => detailError.message)
+            console.log(err);
             return res.status(500).send(errors.join(', '));
 
         }

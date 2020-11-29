@@ -19,7 +19,10 @@ async function login(req , res) {
             const token = jwt.sign({
                 FirstName : user.FirstName,
                 LastName : user.LastName,
-                email   : user.email,
+                Email   : user.Email,
+                Birthdate   : user.Birthdate,
+                sex   : user.sex,
+                Rol   : user.Rol,
             
                 });
             return res.status(200).json(token);

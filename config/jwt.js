@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const sign = (user) => {
 
     try{
-      return  jwt.sign({user} ,process.env.SECRET_KEY,{expiresIn:'120ms'})
+      return  jwt.sign({user} ,process.env.SECRET_KEY,{expiresIn:'1h'})
 
     }catch(err){
         throw new Error('This is a new error customs')
@@ -14,12 +14,12 @@ const sign = (user) => {
 const verify = (token) =>{
 
     try{
-    const decode = jwt.verify(token,process.env.SECRET_KEY)
-    return 
-    
+        return jwt.verify(token,process.env.SECRET_KEY)
+
     }catch(err){
 
-        throw new Error('This is a new error custom in verify')
+        throw new Error(err)
+        
     }
 
 }

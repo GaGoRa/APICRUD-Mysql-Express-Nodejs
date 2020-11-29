@@ -1,10 +1,18 @@
+const path = require('path')
 
 function get(req, res) {
-    res.status(200).send('welcome to home');
-
+    
+    try{
+    res.status(200).sendFile(path.join(__dirname, '../public','/index.html'))
+    
+    }catch(err){
+        console.log(err)
+    }
+    
 }
 
 module.exports = {
     get
     
 }
+
