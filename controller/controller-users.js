@@ -1,70 +1,100 @@
-
-const { options } = require('joi');
 const { User} = require('../config/db')
-
-/* 
-const getPagination = (page ,size) => {
-    const limit = size ? +size : 3;
-    const offset =page ? page * limit :0;
-    return { limit , offset}
-} */
+const bcrypt = require('bcrypt')
 
 
 async function getList(req, res) {
 
-    const limit  = req.query.limit ? req.query.limit : 0;
-    const skip  = req.query.skip ? req.query.skip : 0;
+    const limit  = req.query.limit ? parseInt(req.query.limit) :5;
+    const skip  = req.query.skip ? parseInt(req.query.skip)* limit : 0;
 
     try {
-    const count = await User.count()
-    const listUsers = await User.findAll({
-        limit: parseInt(limit),
-        offset: parseInt(skip),
+   
+    const listUsers = await User.findAndCountAll({
+        limit: limit,
+        offset: skip,
     });
-    return res.status(200).json({body: {
-        count: count,
+    return res.status(200).json({
+        page:skip,
         users: listUsers
-    }
         }
+    
     );
+
 }catch(err){
-    console.log(err)
+    console.log(err) 
     return res.status(500).json({message:"Error getting result"});
 
     }
 }
+
 async function create(req, res) {
-    console.log(req.body)
-    try{
-    const CreateUser = await User.create(req.body); 
-    return res.status(200).json({message:  "User " + " " + req.body.FirstName + " " + "created" })
+    
+try{
+    const passwordEncrypt = bcrypt.hashSync(req.body.Password, 10);
+
+    req.body['Password'] = passwordEncrypt;
+    const CreateUser = await User.create( req.body);
+
+    return res.status(200).json({message:  "User " + " " + req.body.FirstName + " " + "created" });
 
     }catch(err){
-       return res.status(404).json({error:{message: err.message }});  
+        console.log(err);
+       return res.status(404).json({msg_error:err.errors[0].message}); 
+        
     }
         
 };
 
 async function deleter(req, res) {
     
-    await User.destroy({ where : {id: req.params.userId}});
-    return res.status(200).json({ message: 'User was deleted'});
     
-}
+    const user = await User.findOne({
+        where : {
+            id: req.params.userId,
+        }
+    });
+    if(!user){
+    return res.status(404).json({errorMessage:"the user not exist"})
+    }else{
+        try{
+        await User.destroy({ where : {id: req.params.userId}});
 
+        return res.status(200).json({ message: 'User was deleted'});
+        }catch(err){
+        console.log(err);
+        return res.status(404).json({msg_error:err.errors[0].message})
+    }
+}
+}
 async function get(req, res) {
-    console.log(req.params.userId)
-    const user = await User.findAll({where: {id: req.params.userId}})
     
+    const user = await User.findAll({where: {id: req.params.userId}})
     return res.status(200).json(user);
     
 }
 
 async function update(req, res) {
-    await User.update(req.body ,{where: {id : req.params.userId}});
+
+   
+    const user = await User.findOne({
+        where : {
+            id: req.params.userId,
+        }
+    });
+    console.log(user)
+    if(!user){
+    return res.status(404).json({errorMessage:"the user not exist"})
+    }else{
     
-    return res.status(200).send('Update user');
-    
+    	try{
+        await User.update(req.body ,{where: {id : req.params.userId}});    
+        return res.status(200).json({ message :'Update user'});
+
+        }catch(err){
+        console.log(err);
+        return res.status(404).json({msg_error:err.errors[0].message})
+        }
+    } 
 }
 
 module.exports = {

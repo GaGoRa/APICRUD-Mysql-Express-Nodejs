@@ -1,4 +1,4 @@
-const e = require('express');
+
 const Joi = require('joi');
 
 
@@ -16,40 +16,41 @@ const Joi = require('joi');
         .min(3)
         .max(30),
 
-        DNI: Joi.number()
-        .integer()
-        .min(1)
-        .max(11)
+        DNI: Joi.number().integer()
+        .greater(6)
         .required(),
 
+            //example : '12-21-2012'
         Birthdate: Joi.date()
         .required(),
         
+        
         Sex: Joi.string()
         .min(3)
-        .max(5)
+        .max(8)
+        .valid('FEMALE','female','male','MALE')
         .required(),
 
-        Password:Joi.string()
+        Password:Joi.string() 
         .alphanum()
-        .min(4)
-        .max(10)
+        .min(8)
+        .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')),
+        
+
+        Email:Joi.string()
+        .email()
         .required(),
 
-        email:Joi.string().email()
-
-        
-        
+        Rol: Joi.string()
+        .valid('ADMIN','SHOPPING_MANAGER','COMERCE_MANAGER','USER')
+        .required()
 
     });
-    console.log(users);
 
     try {
         const result = await users.validateAsync(req.body);
-        console.log(result);
         next()
     }catch(err){
-        console.log(err);
         if(err.details && err.details.length > 0){
             const errors = err.details.map(detailError => detailError.message)
             return res.status(500).send(errors.join(', '));
@@ -62,8 +63,69 @@ const Joi = require('joi');
 
 }
 
+async function update(req, res, next) {
+
+
+    const users = Joi.object( {
+        FirstName: Joi.string()
+        .alphanum()
+        .min(3)
+        .max(15),
+        
+
+        LastName: Joi.string()
+        .alphanum()
+        .min(3)
+        .max(30),
+
+        DNI: Joi.number().integer()
+        .greater(6),
+        
+            //example : '12-21-2012'
+        Birthdate: Joi.date(),
+        
+        
+        Sex: Joi.string()
+        .min(3)
+        .max(8)
+        .valid('FEMALE','MALE').uppercase(),
+    
+        Password:Joi.string()
+        .alphanum()
+        .min(8),
+        
+        Email:Joi.string()
+        .email(),
+        
+
+        Rol: Joi.string()
+        .valid('ADMIN','SHOPPING_MANAGER','COMERCE_MANAGER','USER').uppercase()
+        
+    });
+
+    try {
+        const result = await users.validateAsync(req.body);
+        console.log(req.body)
+        next()
+    }catch(err){
+        if(err.details && err.details.length > 0){
+            const errors = err.details.map(detailError => detailError.message)
+            console.log(err);
+            return res.status(500).send(errors.join(', '));
+
+        }
+        console.log(err);
+        return res.status(500).send('We have errors when validating data');
+    
+    }
+
+}
+
+
+
 module.exports = {
-    create
+    create,
+    update
 }
 
 
